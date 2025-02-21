@@ -1,6 +1,48 @@
-venv/
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.log
+*.pyc
+*.pyo
+*.pyd
+*.swp
+
+# Virtual environment
 venv/
-__pycache__/
+env/
+*.venv/
+bin/
+include/
+lib/
+lib64/
+share/
+pyvenv.cfg
+
+# Flask & Python cache
+instance/
 *.log
+*.sqlite3
+*.db
+*.sqlite
+*.sqlite-journal
+
+# Ignore uploads (audio files)
+uploads/
+*.wav
+*.mp3
+*.ogg
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Ignore environment variable files
+.env
+*.env
+
+# Deployment files (Heroku, Render, etc.)
+*.pid
+*.pid.lock
