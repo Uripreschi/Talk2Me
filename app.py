@@ -21,11 +21,18 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # Initialize database
 db = SQLAlchemy(app)
 
-# Load OpenAI Key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Check and load OpenAI API Key
+openai_api_key = os.getenv("OPENAI_API_KEY")
+if not openai_api_key:
+    raise ValueError("🚨 OPENAI_API_KEY is missing! Add it to your .env file.")
 
-# Load Whisper model **only once** (Optimization)
-model = whisper.load_model("base")
+openai.api_key = openai_api_key
+
+# Load Whisper Model
+try:
+    model = whisper.load_model("base")
+except Exception as e:
+    raise RuntimeError(f"🚨 Whisper model failed to load: {e}")
 
 # Database Model
 class StudentResponse(db.Model):
@@ -34,7 +41,6 @@ class StudentResponse(db.Model):
     correct_answer = db.Column(db.String(1000), nullable=False)
     student_response = db.Column(db.String(1000), nullable=True)
     score = db.Column(db.Float, nullable=True)
-    grading_strictness = db.Column(db.String(50), nullable=False, default="normal")
 
 # Homepage for teachers to input questions
 @app.route("/", methods=["GET", "POST"])
@@ -42,12 +48,11 @@ def index():
     if request.method == "POST":
         question = request.form.get("question")
         correct_answer = request.form.get("correct_answer")
-        grading_strictness = request.form.get("grading_strictness", "normal")
 
         if not question or not correct_answer:
             return jsonify({"error": "Both fields are required"}), 400
 
-        entry = StudentResponse(question=question, correct_answer=correct_answer, grading_strictness=grading_strictness)
+        entry = StudentResponse(question=question, correct_answer=correct_answer)
         db.session.add(entry)
         db.session.commit()
 
@@ -73,20 +78,12 @@ def submit():
     if not latest_question:
         return jsonify({"error": "No questions available"}), 400
 
-    # Define grading strictness in the AI prompt
-    grading_levels = {
-        "lenient": "Be very forgiving in grading.",
-        "normal": "Grade fairly and logically.",
-        "strict": "Be very harsh in grading."
-    }
-    strictness_level = grading_levels.get(latest_question.grading_strictness, "normal")
-
     # Grade response using GPT-4
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": f"You are an AI grader. {strictness_level}"},
+                {"role": "system", "content": "You are a strict but fair oral assessment grader."},
                 {"role": "user", "content": f"Question: {latest_question.question}\nCorrect Answer: {latest_question.correct_answer}\nStudent Response: {transcript}\n\nGive a score from 0 to 100 and a short feedback note."}
             ]
         )
@@ -102,6 +99,4 @@ def submit():
     return jsonify({"transcript": transcript, "score_feedback": score_feedback})
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()  # Ensure the database is initialized
     app.run(debug=True)
