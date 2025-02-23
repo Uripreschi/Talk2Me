@@ -1,6 +1,7 @@
-openai-whisper
 Flask
 Flask-SQLAlchemy
 gunicorn
 python-dotenv
 requests
+openai
+openai-whisper
