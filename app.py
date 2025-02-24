@@ -23,8 +23,10 @@ db = SQLAlchemy(app)
 
 # Check and load OpenAI API Key
 openai_api_key = os.getenv("OPENAI_API_KEY")
+
 if not openai_api_key:
-    raise ValueError("🚨 OPENAI_API_KEY is missing! Add it to your .env file.")
+    print("🚨 ERROR: Missing OPENAI_API_KEY. Add it to your environment variables.")
+    exit(1)
 
 openai.api_key = openai_api_key
 
@@ -32,7 +34,8 @@ openai.api_key = openai_api_key
 try:
     model = whisper.load_model("base")
 except Exception as e:
-    raise RuntimeError(f"🚨 Whisper model failed to load: {e}")
+    print(f"🚨 ERROR: Whisper model failed to load: {e}")
+    exit(1)
 
 # Database Model
 class StudentResponse(db.Model):
