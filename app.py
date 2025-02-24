@@ -6,10 +6,10 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load environment variables from .env
 load_dotenv()
 
-# Validate API Key
+# Ensure OpenAI API Key is available
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     raise ValueError("🚨 ERROR: Missing OPENAI_API_KEY. Add it to your environment variables.")
@@ -25,14 +25,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Ensure Uploads Directory Exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-# Initialize Database
+# Initialize database
 db = SQLAlchemy(app)
 
-# Load Whisper Model
-try:
-    model = whisper.load_model("base")
-except Exception as e:
-    raise RuntimeError(f"Failed to load Whisper model: {e}")
+# Ensure database tables are created
+with app.app_context():
+    db.create_all()
+
+# Load Whisper Model (only once for performance)
+model = whisper.load_model("base")
 
 # Database Model
 class StudentResponse(db.Model):
@@ -42,11 +43,7 @@ class StudentResponse(db.Model):
     student_response = db.Column(db.String(1000), nullable=True)
     score = db.Column(db.Float, nullable=True)
 
-# Ensure Database Tables Exist
-with app.app_context():
-    db.create_all()
-
-# Homepage for Teachers to Input Questions
+# Homepage - Display input form
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
@@ -73,19 +70,16 @@ def submit():
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(filepath)
 
-    # Transcribe Audio
-    try:
-        result = model.transcribe(filepath)
-        transcript = result["text"]
-    except Exception as e:
-        return jsonify({"error": f"Whisper transcription failed: {e}"}), 500
+    # Transcribe audio
+    result = model.transcribe(filepath)
+    transcript = result["text"]
 
-    # Retrieve Latest Question
+    # Retrieve latest question
     latest_question = StudentResponse.query.order_by(StudentResponse.id.desc()).first()
     if not latest_question:
         return jsonify({"error": "No questions available"}), 400
 
-    # Grade Response Using GPT-4
+    # Grade response using GPT-4
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
@@ -96,16 +90,17 @@ def submit():
         )
         score_feedback = response["choices"][0]["message"]["content"]
     except Exception as e:
-        return jsonify({"error": f"OpenAI grading failed: {e}"}), 500
+        return jsonify({"error": str(e)}), 500
 
-    # Save Response and Score
+    # Save response and score
     latest_question.student_response = transcript
     latest_question.score = float(score_feedback.split()[0])  # Extract score
     db.session.commit()
 
     return jsonify({"transcript": transcript, "score_feedback": score_feedback})
 
+# Run App
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # Ensures the database tables are created
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
