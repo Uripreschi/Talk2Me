@@ -7,21 +7,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Teacher Portal</h1>
-    <form action="/" method="post">
-        <label>Question:</label>
-        <input type="text" name="question" required><br>
-        <label>Correct Answer:</label>
-        <input type="text" name="correct_answer" required><br>
-        <button type="submit">Save</button>
-    </form>
+    <div class="container">
+        <h1 class="logo">Talk<span class="number2">2</span>Me</h1>
+        <p class="tagline">Setting You Up for Success</p>
 
-    <h2>Student Response</h2>
-    <input type="file" id="audioFile">
-    <button onclick="uploadAudio()">Submit</button>
+        <h2>Teacher Portal</h2>
+        <form action="/" method="post" class="form-box">
+            <label>Question:</label>
+            <input type="text" name="question" required>
+            <label>Correct Answer:</label>
+            <input type="text" name="correct_answer" required>
+            <button type="submit">Save</button>
+        </form>
 
-    <p id="transcript"></p>
-    <p id="score"></p>
+        <h2>Student Response</h2>
+        <div class="form-box">
+            <input type="file" id="audioFile">
+            <button onclick="uploadAudio()">Submit</button>
+        </div>
+
+        <p id="transcript"></p>
+        <p id="score"></p>
+    </div>
 
     <script>
         function uploadAudio() {
