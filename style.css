@@ -1,0 +1,67 @@
+/* Import brand fonts */
+@import url('https://fonts.googleapis.com/css2?family=Quattero:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Klemer+Display:wght@400;700&display=swap');
+
+/* Apply brand colors */
+:root {
+    --primary-blue: #004db4; /* Main brand blue */
+    --dark-blue: #0049aa; /* Secondary blue */
+    --light-blue: #6699ff; /* Accent for highlights */
+    --black: #000000;
+    --font-quattero: 'Quattero', sans-serif;
+    --font-klemer: 'Klemer Display', serif;
+}
+
+body {
+    font-family: var(--font-quattero);
+    text-align: center;
+    background-color: white;
+    color: var(--black);
+    margin: 50px;
+}
+
+/* Logo Styling */
+.logo {
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--primary-blue);
+}
+
+.logo .number2 {
+    font-family: var(--font-klemer);
+    color: var(--light-blue);
+    font-size: 56px;
+}
+
+.tagline {
+    font-family: var(--font-quattero);
+    font-size: 18px;
+    color: var(--dark-blue);
+}
+
+/* Input Fields */
+input {
+    display: block;
+    margin: 15px auto;
+    padding: 12px;
+    width: 280px;
+    border: 2px solid var(--primary-blue);
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Buttons */
+button {
+    padding: 12px 25px;
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: var(--dark-blue);
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk2Me - AI Oral Assessment</title>
+</head>
+<body>
+    <h1>Teacher Portal</h1>
+    <form action="/" method="post">
+        <label>Question:</label>
+        <input type="text" name="question" required><br>
+        <label>Correct Answer:</label>
+        <input type="text" name="correct_answer" required><br>
+        <button type="submit">Save</button>
+    </form>
+
+    <h2>Student Response</h2>
+    <input type="file" id="audioFile">
+    <button onclick="uploadAudio()">Submit</button>
+
+    <p id="transcript"></p>
+    <p id="score"></p>
+
+    <script>
+        function uploadAudio() {
+            let file = document.getElementById("audioFile").files[0];
+            let formData = new FormData();
+            formData.append("audio", file);
+
+            fetch("/submit", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("transcript").innerText = "Transcript: " + data.transcript;
+                document.getElementById("score").innerText = "Score: " + data.score;
+            });
+        }
+    </script>
+</body>
+</html>
