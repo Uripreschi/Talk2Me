@@ -11,41 +11,15 @@
         <h1 class="logo">Talk<span class="number2">2</span>Me</h1>
         <p class="tagline">Setting You Up for Success</p>
 
-        <h2>Teacher Portal</h2>
-        <form action="/" method="post" class="form-box">
-            <label>Question:</label>
-            <input type="text" name="question" required>
-            <label>Correct Answer:</label>
-            <input type="text" name="correct_answer" required>
-            <button type="submit">Save</button>
-        </form>
-
-        <h2>Student Response</h2>
-        <div class="form-box">
-            <input type="file" id="audioFile">
-            <button onclick="uploadAudio()">Submit</button>
-        </div>
-
-        <p id="transcript"></p>
-        <p id="score"></p>
+        <nav>
+            <a href="pages/login.html">Login</a> |
+            <a href="pages/teacher.html">Teacher Portal</a> |
+            <a href="pages/student.html">Student Dashboard</a> |
+            <a href="pages/quiz.html">Take Quiz</a> |
+            <a href="pages/results.html">Results</a>
+        </nav>
     </div>
 
-    <script>
-        function uploadAudio() {
-            let file = document.getElementById("audioFile").files[0];
-            let formData = new FormData();
-            formData.append("audio", file);
-
-            fetch("/submit", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("transcript").innerText = "Transcript: " + data.transcript;
-                document.getElementById("score").innerText = "Score: " + data.score;
-            });
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

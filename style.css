@@ -2,11 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Quattero:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Klemer+Display:wght@400;700&display=swap');
 
-/* Apply brand colors */
 :root {
-    --primary-blue: #004db4; /* Main brand blue */
-    --dark-blue: #0049aa; /* Secondary blue */
-    --light-blue: #6699ff; /* Accent for highlights */
+    --primary-blue: #004db4;
+    --dark-blue: #0049aa;
+    --light-blue: #6699ff;
     --black: #000000;
     --font-quattero: 'Quattero', sans-serif;
     --font-klemer: 'Klemer Display', serif;
@@ -20,7 +19,6 @@ body {
     margin: 50px;
 }
 
-/* Logo Styling */
 .logo {
     font-size: 48px;
     font-weight: bold;
@@ -34,23 +32,21 @@ body {
 }
 
 .tagline {
-    font-family: var(--font-quattero);
     font-size: 18px;
     color: var(--dark-blue);
 }
 
-/* Input Fields */
-input {
-    display: block;
-    margin: 15px auto;
-    padding: 12px;
-    width: 280px;
-    border: 2px solid var(--primary-blue);
-    border-radius: 5px;
-    font-size: 16px;
+nav a {
+    text-decoration: none;
+    color: var(--primary-blue);
+    font-size: 18px;
+    margin: 0 10px;
 }
 
-/* Buttons */
+nav a:hover {
+    color: var(--light-blue);
+}
+
 button {
     padding: 12px 25px;
     background-color: var(--primary-blue);
